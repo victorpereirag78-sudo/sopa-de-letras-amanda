@@ -9,8 +9,8 @@ window.Dificultades = [
     cantidadPalabras: 6,
     largoMin: 3,
     largoMax: 6,
-    ejes: ['horizontal', 'vertical'],
-    invertidas: false,
+    ejes: ['horizontal', 'vertical', 'diagonal'],
+    invertidas: true,
     segundos: 180,
     ayudas: { pista: 3, primeraLetra: 3, revolver: 2, congelar: 2 },
     multiplicador: 1
@@ -24,7 +24,7 @@ window.Dificultades = [
     largoMin: 4,
     largoMax: 8,
     ejes: ['horizontal', 'vertical', 'diagonal'],
-    invertidas: false,
+    invertidas: true,
     segundos: 150,
     ayudas: { pista: 2, primeraLetra: 2, revolver: 2, congelar: 1 },
     multiplicador: 1.3
