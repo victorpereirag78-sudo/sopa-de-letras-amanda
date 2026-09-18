@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Sopa de Letras — Amanda</title>
+<meta name="description" content="Un juego de sopa de letras moderno, colorido y personalizado para cualquier jugador.">
+<meta name="theme-color" content="#6c3ce9">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icono.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icono.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/estilos.css?v=3">
+</head>
+<body>
+
+<div id="fondo-decorativo" aria-hidden="true">
+  <span class="burbuja b1"></span>
+  <span class="burbuja b2"></span>
+  <span class="burbuja b3"></span>
+  <span class="burbuja b4"></span>
+  <span class="burbuja b5"></span>
+</div>
+
+<main id="ui-root">
+
+  <!-- PANTALLA: Nombre del jugador -->
+  <section class="pantalla" id="pantalla-nombre" data-pantalla>
+    <div class="tarjeta tarjeta-centrada anim-entrada">
+      <div class="logo-juego">
+        <span class="logo-emoji">🔤</span>
+        <h1>Sopa de Letras</h1>
+      </div>
+      <p class="subtitulo">¿Cómo te llamas?</p>
+      <form id="form-nombre" autocomplete="off">
+        <input type="text" id="input-nombre" class="input-grande" placeholder="Escribe tu nombre" maxlength="18" required>
+        <button type="submit" class="btn btn-primario btn-grande">
+          <span>COMENZAR</span>
+          <span class="btn-icono">→</span>
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- PANTALLA: Selección de temática -->
+  <section class="pantalla oculta" id="pantalla-tematica" data-pantalla>
+    <div class="tarjeta anim-entrada">
+      <p class="saludo" id="saludo-tematica"></p>
+      <h2 class="titulo-pantalla">Elige una temática</h2>
+      <div class="grilla-tematicas" id="grilla-tematicas"></div>
+    </div>
+  </section>
+
+  <!-- PANTALLA: Selección de dificultad -->
+  <section class="pantalla oculta" id="pantalla-dificultad" data-pantalla>
+    <div class="tarjeta anim-entrada">
+      <button class="btn-volver" id="btn-volver-dificultad" aria-label="Volver">←</button>
+      <h2 class="titulo-pantalla">Elige la dificultad</h2>
+      <div class="lista-dificultades" id="lista-dificultades"></div>
+      <label class="switch-relax">
+        <input type="checkbox" id="check-relax">
+        <span class="switch-visual"></span>
+        <span class="switch-texto">🧘 Modo Relax — sin límite de tiempo</span>
+      </label>
+      <button class="btn btn-primario btn-grande" id="btn-jugar">¡A JUGAR! 🎲</button>
+    </div>
+  </section>
+
+  <!-- PANTALLA: Juego -->
+  <section class="pantalla oculta" id="pantalla-juego" data-pantalla>
+    <header class="hud" id="hud-principal">
+      <div class="hud-fila">
+        <button class="btn-icono-redondo" id="btn-pausa" aria-label="Pausa">⏸️</button>
+        <div class="hud-stat" title="Puntos">
+          <span class="hud-icono">⭐</span>
+          <span id="hud-puntos">0</span>
+        </div>
+        <div class="hud-stat" id="hud-combo-caja" title="Combo">
+          <span class="hud-icono">🔥</span>
+          <span id="hud-combo">x1</span>
+        </div>
+        <div class="hud-stat" id="hud-tiempo-caja" title="Tiempo">
+          <span class="hud-icono">⏱️</span>
+          <span id="hud-tiempo">--:--</span>
+        </div>
+      </div>
+      <div class="barra-tiempo-contenedor" id="barra-tiempo-contenedor">
+        <div class="barra-tiempo" id="barra-tiempo"></div>
+      </div>
+    </header>
+
+    <div class="zona-juego">
+      <div class="lienzo-envoltorio">
+        <div id="contenedor-phaser"></div>
+        <p class="mensaje-plato oculto" id="mensaje-plato">Preparando tu sopa...</p>
+        <button class="btn-omitir oculto" id="btn-omitir-animacion">⚡ Omitir animación</button>
+      </div>
+
+      <aside class="panel-palabras" id="panel-palabras">
+        <h3 class="panel-titulo"><span id="panel-tematica-icono"></span> <span id="panel-tematica-nombre"></span></h3>
+        <ul class="lista-palabras" id="lista-palabras"></ul>
+        <div class="caja-ayudas">
+          <button class="btn-ayuda" id="ayuda-pista" data-ayuda="pista" title="Revela parte de una palabra">
+            <span class="ayuda-emoji">🔍</span><span class="ayuda-nombre">Pista</span><span class="ayuda-cant" id="cant-pista"></span>
+          </button>
+          <button class="btn-ayuda" id="ayuda-primera" data-ayuda="primeraLetra" title="Revela la primera letra">
+            <span class="ayuda-emoji">💡</span><span class="ayuda-nombre">1ª letra</span><span class="ayuda-cant" id="cant-primera"></span>
+          </button>
+          <button class="btn-ayuda" id="ayuda-revolver" data-ayuda="revolver" title="Reorganiza las letras libres">
+            <span class="ayuda-emoji">🔄</span><span class="ayuda-nombre">Revolver</span><span class="ayuda-cant" id="cant-revolver"></span>
+          </button>
+          <button class="btn-ayuda" id="ayuda-congelar" data-ayuda="congelar" title="Congela el tiempo unos segundos">
+            <span class="ayuda-emoji">❄️</span><span class="ayuda-nombre">Congelar</span><span class="ayuda-cant" id="cant-congelar"></span>
+          </button>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- PANTALLA: Pausa -->
+  <div class="modal-overlay oculta" id="modal-pausa" data-modal>
+    <div class="tarjeta tarjeta-modal anim-entrada">
+      <h2 class="titulo-pantalla">Pausa ⏸️</h2>
+      <div class="opciones-pausa">
+        <label class="switch-relax">
+          <input type="checkbox" id="check-sonido">
+          <span class="switch-visual"></span>
+          <span class="switch-texto">🔊 Sonido</span>
+        </label>
+        <label class="switch-relax">
+          <input type="checkbox" id="check-animaciones">
+          <span class="switch-visual"></span>
+          <span class="switch-texto">🎬 Animaciones reducidas</span>
+        </label>
+      </div>
+      <button class="btn btn-primario btn-grande" id="btn-continuar">CONTINUAR</button>
+      <button class="btn btn-secundario" id="btn-salir-inicio">Salir al inicio</button>
+    </div>
+  </div>
+
+  <!-- PANTALLA: Resultado -->
+  <section class="pantalla oculta" id="pantalla-resultado" data-pantalla>
+    <div class="tarjeta tarjeta-resultado anim-entrada">
+      <p class="resultado-titulo" id="resultado-titulo">¡Excelente!</p>
+      <div class="resultado-estrellas" id="resultado-estrellas">⭐⭐⭐</div>
+      <p class="resultado-subtitulo">¡Sopa completada!</p>
+      <div class="resultado-stats">
+        <div class="resultado-stat">
+          <span class="resultado-stat-label">Puntos</span>
+          <span class="resultado-stat-valor" id="resultado-puntos">0</span>
+        </div>
+        <div class="resultado-stat">
+          <span class="resultado-stat-label">Palabras</span>
+          <span class="resultado-stat-valor" id="resultado-palabras">0/0</span>
+        </div>
+        <div class="resultado-stat">
+          <span class="resultado-stat-label">Tiempo</span>
+          <span class="resultado-stat-valor" id="resultado-tiempo">00:00</span>
+        </div>
+        <div class="resultado-stat">
+          <span class="resultado-stat-label">Mejor combo</span>
+          <span class="resultado-stat-valor" id="resultado-combo">x1</span>
+        </div>
+      </div>
+      <div class="resultado-botones">
+        <button class="btn btn-primario btn-grande" id="btn-jugar-otra">JUGAR OTRA</button>
+        <button class="btn btn-secundario" id="btn-cambiar-tema">CAMBIAR TEMA</button>
+        <button class="btn btn-terciario" id="btn-volver-inicio">VOLVER AL INICIO</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div id="capa-flotantes" aria-hidden="true"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
+<script src="js/config/constantes.js?v=3"></script>
+<script src="js/config/tematicas.js?v=3"></script>
+<script src="js/config/dificultades.js?v=3"></script>
+<script src="js/sistemas/almacenamiento.js?v=3"></script>
+<script src="js/sistemas/supabaseCliente.js?v=3"></script>
+<script src="js/sistemas/usuario.js?v=3"></script>
+<script src="js/sistemas/estadisticas.js?v=3"></script>
+<script src="js/sistemas/sonido.js?v=3"></script>
+<script src="js/sistemas/puntuacion.js?v=3"></script>
+<script src="js/sistemas/combo.js?v=3"></script>
+<script src="js/sistemas/temporizador.js?v=3"></script>
+<script src="js/sistemas/ayudas.js?v=3"></script>
+<script src="js/nucleo/generadorSopa.js?v=3"></script>
+<script src="js/juego/escenaPlato.js?v=3"></script>
+<script src="js/juego/escenaTablero.js?v=3"></script>
+<script src="js/ui/pantallas.js?v=3"></script>
+<script src="js/app.js?v=3"></script>
+</body>
+</html>

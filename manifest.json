@@ -1,0 +1,14 @@
+{
+  "name": "Sopa de Letras",
+  "short_name": "Sopa de Letras",
+  "description": "Un juego de sopa de letras moderno, colorido y personalizado.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#150a2e",
+  "theme_color": "#6c3ce9",
+  "icons": [
+    { "src": "icons/icono.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
