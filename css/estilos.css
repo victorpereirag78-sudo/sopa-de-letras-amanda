@@ -154,7 +154,8 @@ button, input { font-family: inherit; }
 .subtitulo { font-size: 18px; color: var(--texto-2); margin: 12px 0 22px; font-weight: 700; }
 
 .creditos { font-size: 12px; color: var(--texto-3); text-align: center; margin: 18px 0 0; font-weight: 600; }
-.creditos strong { color: var(--texto-2); }
+.creditos a { color: var(--texto-2); text-decoration: underline; text-underline-offset: 2px; }
+.creditos a:hover { color: var(--texto-1); }
 
 .input-grande {
   width: 100%;
